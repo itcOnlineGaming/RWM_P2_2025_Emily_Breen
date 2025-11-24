@@ -1,8 +1,13 @@
 {
-	"name": "p2-sidebar",
+	"name": "@rwm-p2-2025-emily-breen/srl-sidebar",
 	"private": true,
-	"version": "0.0.1",
+	"version": "1.0.0",
+	"description": "A reusable Svelte sidebar component for SRL strategies.",
 	"type": "module",
+	"exports": {
+		".": "./src/lib/SrlSidebar.svelte"
+	},
+	"main": "./src/lib/SrlSidebar.svelte",
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
@@ -31,5 +36,21 @@
 		"vite": "^7.1.10",
 		"vitest": "^4.0.5",
 		"vitest-browser-svelte": "^2.0.1"
-	}
+	},
+	"files": [
+		"src/lib/SrlSidebar.svelte",
+		"src/lib/types.ts",
+		"src/lib/style.css"
+	],
+	"keywords": [
+		"svelte",
+		"sidebar",
+		"SRL",
+		"component"
+	],
+	"author": "Your Name",
+	"license": "MIT",
+	"svelte": "./src/lib/SrlSidebar.svelte",
+	"types": "./src/lib/types.ts",
+	
 }

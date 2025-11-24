@@ -91,6 +91,68 @@
     filteredItems = sorted;
     dispatch("change", { filteredItems, selectedFilters, selectedSortId });
   }
+
+  // Add default Difficulty filter group if not present
+  $: {
+    const hasDifficultyFilter = filterGroups.some(g => g.id === "difficulty");
+    if (!hasDifficultyFilter) {
+      filterGroups = [
+        {
+          id: "difficulty",
+          label: "Difficulty",
+          icon: "⚡",
+          type: "checkbox",
+          options: [
+            { value: "Easy", label: "Easy" },
+            { value: "Medium", label: "Medium" },
+            { value: "Hard", label: "Hard" }
+          ]
+        },
+        ...filterGroups
+      ];
+    }
+  }
+
+  // Add default Difficulty sort option if not present
+  $: {
+    const hasDifficultySort = sortOptions.some(o => o.id === "difficulty");
+    if (!hasDifficultySort) {
+      sortOptions = [
+        { id: "difficulty", label: "Difficulty", icon: "⚡" },
+        ...sortOptions
+      ];
+    }
+  }
+
+  // Modal state for collapsed filter options
+  let showModal = false;
+  let modalGroup: FilterGroup | null = null;
+  let modalPosition = { top: 0, left: 0 };
+
+  function openModal(group: FilterGroup, event?: MouseEvent) {
+    modalGroup = group;
+    showModal = true;
+    if (event) {
+      // Position modal near the clicked icon
+      const rect = (event.target as HTMLElement).getBoundingClientRect();
+      modalPosition = { top: rect.bottom + window.scrollY, left: rect.left + window.scrollX };
+    } else {
+      // Default position for keyboard events
+      modalPosition = { top: window.innerHeight / 2, left: window.innerWidth / 2 };
+    }
+  }
+
+  function closeModal() {
+    showModal = false;
+    modalGroup = null;
+  }
+
+  // Close modal on outside click
+  function handleModalBackgroundClick(event: MouseEvent) {
+    if ((event.target as HTMLElement).classList.contains('modal-background')) {
+      closeModal();
+    }
+  }
 </script>
 
 <!-- =======================================================================
@@ -136,15 +198,16 @@
 
   <!-- FILTER GROUPS ------------------------------------------------------- -->
   <div class="sidebar-section filters">
-
     {#each filterGroups as group}
       <section class="filter-group">
 
         <!-- Collapsed icon -->
         {#if collapsed}
-          <div class="collapsed-icon" title={group.label}>
+          <button type="button" class="collapsed-icon" title={group.label} on:click={(e) => openModal(group, e)}
+            aria-label={group.label} tabindex="0"
+            on:keydown={(e) => (e.key === 'Enter' || e.key === ' ') && openModal(group)}>
             {group.icon}
-          </div>
+          </button>
         {/if}
 
         <!-- Expanded label -->
@@ -172,8 +235,30 @@
 
       </section>
     {/each}
-
   </div>
+
+  <!-- Modal for collapsed filter options -->
+  {#if showModal && modalGroup}
+    <div class="modal-background" style="position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:1000;" on:click={handleModalBackgroundClick} role="dialog" aria-modal="true" tabindex="0"
+      on:keydown={(e) => (e.key === 'Escape') && closeModal()}>
+      <div class="modal" style="position:absolute;top:{modalPosition.top}px;left:{modalPosition.left}px;background:white;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.2);padding:1em;min-width:180px;z-index:1001;">
+        <h3 style="margin-top:0;">{modalGroup?.label}</h3>
+        <div class="filter-options">
+          {#each modalGroup?.options ?? [] as option}
+            <label class="filter-chip">
+              <input
+                type={modalGroup?.type ?? "checkbox"}
+                checked={selectedFilters[modalGroup?.id ?? ""]?.includes(option.value)}
+                on:change={() => toggleFilter(modalGroup?.id ?? "", option.value, modalGroup?.type ?? "checkbox")}
+              />
+              <span>{option.label}</span>
+            </label>
+          {/each}
+        </div>
+        <button style="margin-top:1em;" on:click={closeModal}>Close</button>
+      </div>
+    </div>
+  {/if}
 
 
   <!-- SORT SECTION -------------------------------------------------------- -->
