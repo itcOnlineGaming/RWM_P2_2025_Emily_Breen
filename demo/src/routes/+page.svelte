@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { SrlSidebar } from "$lib";
+  import { SrlSidebar } from '@rwm/srl-sidebar';
+  import '@rwm/srl-sidebar/style.css';
 
   type Item = {
     id: number;

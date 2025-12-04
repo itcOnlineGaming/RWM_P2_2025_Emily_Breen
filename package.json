@@ -1,26 +1,29 @@
 {
-	"name": "p2-sidebar",
+	"name": "@rwm/srl-sidebar-monorepo",
 	"private": true,
 	"version": "0.0.1",
 	"type": "module",
+	"workspaces": [
+		"packages/*",
+		"demo"
+	],
 	"scripts": {
-		"dev": "vite dev",
-		"build": "vite build",
-		"preview": "vite preview",
-		"prepare": "svelte-kit sync || echo ''",
-		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"dev": "npm run dev -w demo",
+		"build": "npm run build -w @rwm/srl-sidebar",
+		"build:demo": "npm run build -w @rwm/srl-sidebar-demo",
+		"test": "npm run test -w @rwm/srl-sidebar",
+		"test:e2e": "playwright test",
 		"format": "prettier --write .",
 		"lint": "prettier --check .",
-		"test:unit": "vitest",
-		"test": "npm run test:unit -- --run && npm run test:e2e",
-		"test:e2e": "playwright test"
+		"install:all": "npm install && npm install -w @rwm/srl-sidebar && npm install -w @rwm/srl-sidebar-demo"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.56.1",
 		"@sveltejs/adapter-auto": "^7.0.0",
 		"@sveltejs/kit": "^2.47.1",
 		"@sveltejs/vite-plugin-svelte": "^6.2.1",
+		"@testing-library/svelte": "^5.2.9",
+		"@testing-library/user-event": "^14.6.1",
 		"@vitest/browser-playwright": "^4.0.5",
 		"playwright": "^1.56.1",
 		"prettier": "^3.6.2",

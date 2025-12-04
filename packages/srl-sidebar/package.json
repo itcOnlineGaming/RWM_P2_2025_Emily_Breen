@@ -1,0 +1,49 @@
+{
+	"name": "@rwm/srl-sidebar",
+	"version": "0.0.1",
+	"description": "Self-Regulated Learning (SRL) sidebar component for filtering, sorting, and organizing learning activities",
+	"type": "module",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"svelte": "./src/index.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"svelte": "./src/index.ts",
+			"default": "./dist/index.js"
+		},
+		"./style.css": "./src/style.css"
+	},
+	"files": [
+		"dist",
+		"src"
+	],
+	"scripts": {
+		"build": "svelte-package",
+		"test": "vitest run",
+		"test:watch": "vitest"
+	},
+	"keywords": [
+		"svelte",
+		"srl",
+		"self-regulated-learning",
+		"sidebar",
+		"filter",
+		"sort"
+	],
+	"peerDependencies": {
+		"svelte": "^5.0.0"
+	},
+	"devDependencies": {
+		"@sveltejs/package": "^2.3.0",
+		"@sveltejs/vite-plugin-svelte": "^6.2.1",
+		"@vitest/browser-playwright": "^4.0.5",
+		"playwright": "^1.56.1",
+		"svelte": "^5.41.0",
+		"svelte-check": "^4.3.3",
+		"typescript": "^5.9.3",
+		"vite": "^7.1.10",
+		"vitest": "^4.0.5",
+		"vitest-browser-svelte": "^2.0.1"
+	}
+}
