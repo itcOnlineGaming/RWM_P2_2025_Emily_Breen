@@ -6,9 +6,14 @@ A reusable Svelte 5 component for creating Self-Regulated Learning (SRL) sidebar
 
 - 🎯 **Flexible Filtering**: Support for both checkbox and radio filter groups
 - 🔄 **Sorting**: Built-in sorting options with custom sort functions
-- ⚡ **Quick Tools**: Drag-and-drop quick action buttons
+- ⚡ **Quick Tools**: Drag-and-drop quick action buttons with keyboard support
 - 🎨 **Customizable**: Easy to theme and customize
-- ♿ **Accessible**: ARIA labels and keyboard navigation
+- ♿ **Accessible**: 
+  - ARIA labels on all interactive elements
+  - Visible focus indicators (2px purple outline)
+  - Keyboard navigation support (Tab, Enter, Space)
+  - Screen reader friendly with descriptive labels
+  - Focus trap management within sidebar
 - 🔐 **Auth Section**: Optional authentication status display
 - 📱 **Collapsible**: Space-saving collapsed mode
 

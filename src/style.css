@@ -368,7 +368,8 @@ input[type='radio'] {
 .collapse-button:focus-visible,
 .auth-button:focus-visible,
 .auth-icon-button:focus-visible,
-.clear-button:focus-visible {
+.clear-button:focus-visible,
+.expand-button:focus-visible {
     outline: 2px solid #8c62cf;
     outline-offset: 2px;
 }
@@ -376,6 +377,37 @@ input[type='radio'] {
 .filter-chip:focus-within,
 .sort-item:focus-within {
     box-shadow: 0 0 0 2px #8c62cf33;
+}
+
+.tool-dropzone:focus-visible {
+    outline: 2px solid #8c62cf;
+    outline-offset: 2px;
+    background: #f4eaff;
+    border-color: #8c62cf;
+}
+
+.draggable-item:focus-visible {
+    outline: 2px solid #8c62cf;
+    outline-offset: 2px;
+    background: #f9f7ff;
+}
+
+/* Selected state for keyboard interaction */
+.draggable-item.selected {
+    background: #eadbf9;
+    border-color: #8c62cf;
+    box-shadow: 0 0 0 3px #8c62cf33;
+}
+
+/* Keyboard navigation support */
+.tool-dropzone:focus,
+.draggable-item:focus {
+    outline: none;
+}
+
+.tool-dropzone:focus-visible,
+.draggable-item:focus-visible {
+    z-index: 1;
 }
 
 

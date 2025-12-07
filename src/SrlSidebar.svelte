@@ -103,6 +103,27 @@
     dragOverToolId = null;
   }
 
+  /* Keyboard accessibility for drag & drop */
+  function handleItemKeydown(event: KeyboardEvent, item: any) {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      draggedItem = item;
+      // Visual feedback that item is selected
+      (event.target as HTMLElement)?.classList.add('selected');
+    }
+  }
+
+  function handleToolKeydown(event: KeyboardEvent, toolId: string) {
+    if ((event.key === 'Enter' || event.key === ' ') && draggedItem) {
+      event.preventDefault();
+      handleToolDrop(toolId);
+      // Clear visual feedback
+      document.querySelectorAll('.draggable-item.selected').forEach(el => {
+        el.classList.remove('selected');
+      });
+    }
+  }
+
   /* Sync filters ------------------------- */
   $: {
     for (const group of filterGroups) {
@@ -291,9 +312,10 @@
               on:drop|preventDefault={() => handleToolDrop(tool.id)}
               on:dragover={(e) => handleDragOver(e, tool.id)}
               on:dragleave={handleDragLeave}
+              on:keydown={(e) => handleToolKeydown(e, tool.id)}
               role="button"
               tabindex="0"
-              aria-label={tool.label}
+              aria-label="{tool.label} - Press Enter to apply to selected item"
             >
               <span class="tool-icon">{tool.icon}</span>
               <span class="tool-label">{tool.label}</span>
@@ -323,9 +345,10 @@
             draggable="true"
             on:dragstart={() => draggedItem = item}
             on:dragend={() => draggedItem = null}
+            on:keydown={(e) => handleItemKeydown(e, item)}
             role="button"
             tabindex="0"
-            aria-label="Drag {item.title || item.name || 'item'}"
+            aria-label="Press Enter to select {item.title || item.name || 'item'}, then navigate to a quick tool and press Enter to apply"
           >
             <span class="drag-handle">⋮⋮</span>
             <span class="item-text">{item.title || item.name || 'Untitled'}</span>
