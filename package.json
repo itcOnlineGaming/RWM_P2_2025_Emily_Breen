@@ -35,7 +35,7 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/itcOnlineGaming/RWM_P2_2025_Emily_Breen.git"
+		"url": "git+https://github.com/itcOnlineGaming/RWM_P2_2025_Emily_Breen.git#package-only"
 	},
 	"peerDependencies": {
 		"svelte": "^5.0.0"

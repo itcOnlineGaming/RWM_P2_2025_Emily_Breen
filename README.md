@@ -1,155 +1,125 @@
 # @rwm/srl-sidebar
 
-A reusable Svelte 5 component for creating Self-Regulated Learning (SRL) sidebars with filtering, sorting, and quick actions.
+Self-Regulated Learning (SRL) sidebar component for filtering, sorting, and organizing learning activities. Built with Svelte 5 and TypeScript.
 
 ## Features
 
-- 🎯 **Flexible Filtering**: Support for both checkbox and radio filter groups
-- 🔄 **Sorting**: Built-in sorting options with custom sort functions
-- ⚡ **Quick Tools**: Drag-and-drop quick action buttons with keyboard support
-- 🎨 **Customizable**: Easy to theme and customize
-- ♿ **Accessible**: 
+- **Filtering**: Filter items by multiple criteria (category, difficulty, due date)
+- **Sorting**: Sort items by name, date, or difficulty
+- **Quick Tools**: Drag-and-drop tools for quick actions
+- **Collapsible Sections**: Save space with collapsible filter and tool sections
+- **Authentication**: Login/logout functionality
+- **Accessibility**: 
+  - Full keyboard navigation support (Tab, Enter, Space)
   - ARIA labels on all interactive elements
   - Visible focus indicators (2px purple outline)
-  - Keyboard navigation support (Tab, Enter, Space)
-  - Screen reader friendly with descriptive labels
-  - Focus trap management within sidebar
-- 🔐 **Auth Section**: Optional authentication status display
-- 📱 **Collapsible**: Space-saving collapsed mode
-
-## Project Structure
-
-```
-.
-├── src/                       # Component source files
-│   ├── SrlSidebar.svelte     # Main component
-│   ├── types.ts              # TypeScript types
-│   ├── style.css             # Component styles
-│   └── index.ts              # Package entry point
-├── demo/                      # SvelteKit demo application
-│   └── src/routes/
-│       └── +page.svelte      # Demo implementation
-├── e2e/                       # End-to-end tests
-├── package.json
-└── README.md
-```
+  - Screen reader friendly
+- **Responsive**: Mobile-friendly design with adaptive layout
+- **TypeScript**: Full type safety
 
 ## Installation
 
-### From GitHub
+### From GitHub (package-only branch)
 
 ```bash
-npm install git+https://github.com/itcOnlineGaming/RWM_P2_2025_Emily_Breen.git
+npm install git+https://github.com/itcOnlineGaming/RWM_P2_2025_Emily_Breen.git#package-only
 ```
 
-### From npm (when published)
+### Quick Start
 
 ```bash
-npm install @rwm/srl-sidebar
-```
+# Install dependencies
+npm install
 
-## Getting Started
+# Install Playwright browsers for testing
+npx playwright install
 
-### Development
-
-Run the demo app in development mode:
-
-```bash
-npm run dev:demo
-```
-
-### Building
-
-Build the component package:
-
-```bash
-npm run build
-```
-
-Build the demo app:
-
-```bash
-npm run build:demo
-```
-
-### Testing
-
-Run component tests:
-
-```bash
+# Run tests
 npm test
-```
 
-Watch mode for tests:
+# Build package
+npm run build
 
-```bash
-npm run test:watch
+# Start demo
+npm run dev:demo
 ```
 
 ## Usage
 
 ```svelte
-<script>
+<script lang="ts">
   import { SrlSidebar } from '@rwm/srl-sidebar';
   import '@rwm/srl-sidebar/style.css';
-
-  const items = [
-    { id: 1, phase: 'plan', status: 'todo', title: 'Study for exam' }
-  ];
-
-  const filterGroups = [
-    {
-      id: 'phase',
-      label: 'SRL Phase',
-      icon: '🔮',
-      type: 'radio',
-      options: [
-        { value: 'plan', label: 'Plan' },
-        { value: 'monitor', label: 'Monitor' },
-        { value: 'reflect', label: 'Reflect' }
-      ]
-    }
-  ];
-
-  const sortOptions = [
-    { id: 'title', label: 'Alphabetical', icon: '↕️' }
-  ];
-
-  const quickTools = [
-    { id: 'mark-complete', label: 'Mark Complete', icon: '✅', category: 'status' }
-  ];
-
-  let filteredItems = [];
-
-  function handleQuickToolAction(event) {
-    const { toolId, item } = event.detail;
-    console.log(`Quick tool ${toolId} applied to`, item);
+  
+  let draggableItems = $state([
+    { id: '1', text: 'Task 1', category: 'Work', difficulty: 'Easy', dueDate: '2024-01-01' }
+  ]);
+  
+  let quickTools = $state([
+    { id: 'tool1', label: 'Timer', icon: '⏱️' }
+  ]);
+  
+  function handleItemDrop(event: CustomEvent) {
+    console.log('Item dropped:', event.detail);
   }
 </script>
 
-<SrlSidebar
-  title="Filters"
-  {items}
-  {filterGroups}
-  {sortOptions}
+<SrlSidebar 
+  {draggableItems}
   {quickTools}
-  bind:filteredItems
-  on:quickToolAction={handleQuickToolAction}
+  isAuthenticated={false}
+  onItemDrop={handleItemDrop}
+  onLogin={() => console.log('Login')}
+  onLogout={() => console.log('Logout')}
 />
 ```
 
-## Demo
+## Props
 
-Check out the `demo/` folder for a complete SvelteKit application demonstrating all features of the sidebar component.
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `draggableItems` | `DraggableItem[]` | `[]` | Items to display in the sidebar |
+| `quickTools` | `QuickTool[]` | `[]` | Quick access tools |
+| `isAuthenticated` | `boolean` | `false` | Whether user is authenticated |
+| `initialCollapsed` | `boolean` | `false` | Initial collapsed state |
+| `onItemDrop` | `(event: CustomEvent) => void` | `undefined` | Callback when item is dropped on a tool |
+| `onLogin` | `() => void` | `undefined` | Callback for login action |
+| `onLogout` | `() => void` | `undefined` | Callback for logout action |
+
+## Project Structure
+
+```
+src/                       # Component source files
+  SrlSidebar.svelte       # Main component
+  types.ts                # TypeScript types
+  style.css               # Component styles
+  index.ts                # Package entry point
+demo/                     # SvelteKit demo application
+e2e/                      # End-to-end tests
+```
+
+## Testing
+
+The component includes 31 comprehensive tests:
+- 22 component tests covering rendering, filtering, sorting, and interactions
+- 9 type validation tests
+
+```bash
+npm test              # Run all tests
+npm run test:watch    # Watch mode
+```
+
+## Development
+
+```bash
+npm run dev:demo      # Start demo application
+npm run build         # Build package
+npm run build:demo    # Build demo
+```
 
 ## License
 
 MIT
-
-To create a production version of your app:
-
-```sh
-npm run build
 ```
 
 You can preview the production build with `npm run preview`.
