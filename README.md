@@ -1,45 +1,56 @@
-# SRL Sidebar Monorepo
+# @rwm/srl-sidebar
 
-A monorepo containing the SRL (Self-Regulated Learning) Sidebar component and demo application.
+A reusable Svelte 5 component for creating Self-Regulated Learning (SRL) sidebars with filtering, sorting, and quick actions.
+
+## Features
+
+- 🎯 **Flexible Filtering**: Support for both checkbox and radio filter groups
+- 🔄 **Sorting**: Built-in sorting options with custom sort functions
+- ⚡ **Quick Tools**: Drag-and-drop quick action buttons
+- 🎨 **Customizable**: Easy to theme and customize
+- ♿ **Accessible**: ARIA labels and keyboard navigation
+- 🔐 **Auth Section**: Optional authentication status display
+- 📱 **Collapsible**: Space-saving collapsed mode
 
 ## Project Structure
 
 ```
 .
-├── packages/
-│   └── srl-sidebar/           # Reusable Svelte component package
-│       ├── src/
-│       │   ├── SrlSidebar.svelte
-│       │   ├── types.ts
-│       │   ├── style.css
-│       │   └── index.ts
-│       ├── package.json
-│       └── README.md
+├── src/                       # Component source files
+│   ├── SrlSidebar.svelte     # Main component
+│   ├── types.ts              # TypeScript types
+│   ├── style.css             # Component styles
+│   └── index.ts              # Package entry point
 ├── demo/                      # SvelteKit demo application
-│   ├── src/
-│   │   ├── lib/
-│   │   └── routes/
-│   └── package.json
+│   └── src/routes/
+│       └── +page.svelte      # Demo implementation
 ├── e2e/                       # End-to-end tests
-└── package.json               # Root workspace config
+├── package.json
+└── README.md
+```
+
+## Installation
+
+### From GitHub
+
+```bash
+npm install git+https://github.com/itcOnlineGaming/RWM_P2_2025_Emily_Breen.git
+```
+
+### From npm (when published)
+
+```bash
+npm install @rwm/srl-sidebar
 ```
 
 ## Getting Started
-
-### Installation
-
-```bash
-npm install
-```
-
-This will install dependencies for the root workspace and all packages.
 
 ### Development
 
 Run the demo app in development mode:
 
 ```bash
-npm run dev
+npm run dev:demo
 ```
 
 ### Building
@@ -64,55 +75,71 @@ Run component tests:
 npm test
 ```
 
-Run end-to-end tests:
+Watch mode for tests:
 
 ```bash
-npm run test:e2e
+npm run test:watch
 ```
 
-## Packages
+## Usage
 
-### @rwm/srl-sidebar
+```svelte
+<script>
+  import { SrlSidebar } from '@rwm/srl-sidebar';
+  import '@rwm/srl-sidebar/style.css';
 
-The main Svelte component for creating SRL sidebars with filtering, sorting, and quick actions.
+  const items = [
+    { id: 1, phase: 'plan', status: 'todo', title: 'Study for exam' }
+  ];
 
-See [packages/srl-sidebar/README.md](packages/srl-sidebar/README.md) for detailed documentation.
+  const filterGroups = [
+    {
+      id: 'phase',
+      label: 'SRL Phase',
+      icon: '🔮',
+      type: 'radio',
+      options: [
+        { value: 'plan', label: 'Plan' },
+        { value: 'monitor', label: 'Monitor' },
+        { value: 'reflect', label: 'Reflect' }
+      ]
+    }
+  ];
 
-### Demo App
+  const sortOptions = [
+    { id: 'title', label: 'Alphabetical', icon: '↕️' }
+  ];
 
-A SvelteKit application demonstrating the SRL Sidebar component in action.
+  const quickTools = [
+    { id: 'mark-complete', label: 'Mark Complete', icon: '✅', category: 'status' }
+  ];
 
-## Development Workflow
+  let filteredItems = [];
 
-1. Make changes to the component in `packages/srl-sidebar/src/`
-2. Tests run automatically or run `npm test`
-3. View changes in the demo app with `npm run dev`
-4. Build the package with `npm run build`
+  function handleQuickToolAction(event) {
+    const { toolId, item } = event.detail;
+    console.log(`Quick tool ${toolId} applied to`, item);
+  }
+</script>
 
-## Workspaces
-
-This project uses npm workspaces to manage the monorepo structure. Each package can be worked on independently:
-
-```bash
-# Run commands in specific workspace
-npm run dev -w demo
-npm run test -w @rwm/srl-sidebar
-npm run build -w @rwm/srl-sidebar
+<SrlSidebar
+  title="Filters"
+  {items}
+  {filterGroups}
+  {sortOptions}
+  {quickTools}
+  bind:filteredItems
+  on:quickToolAction={handleQuickToolAction}
+/>
 ```
+
+## Demo
+
+Check out the `demo/` folder for a complete SvelteKit application demonstrating all features of the sidebar component.
 
 ## License
 
 MIT
-
-
-```sh
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
 
 To create a production version of your app:
 
