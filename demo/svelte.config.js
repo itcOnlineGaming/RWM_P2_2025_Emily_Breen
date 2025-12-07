@@ -13,8 +13,8 @@ const config = {
 		// See https://svelte.dev/docs/kit/adapters for more information about adapters.
 		adapter: adapter(),
 		alias: {
-			'@rwm/srl-sidebar': '../src/index.ts',
-			'@rwm/srl-sidebar/*': '../src/*'
+			'@rwm/srl-sidebar': '../packages/srl-sidebar/src/index.ts',
+			'@rwm/srl-sidebar/*': '../packages/srl-sidebar/src/*'
 		}
 	}
 };
