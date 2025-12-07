@@ -250,7 +250,115 @@
 
 </script>
 
-<div style="display: flex; height: 100vh; font-family: Arial, Helvetica, sans-serif;">
+<style>
+  .app-container {
+    display: flex;
+    height: 100vh;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+  .main-content {
+    flex: 1;
+    overflow-y: auto;
+    min-width: 0;
+    max-width: 100%;
+    padding: 20px;
+  }
+
+  .item-card {
+    padding: 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    background: white;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.2s;
+  }
+
+  .item-card:hover {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  }
+
+  .item-header {
+    margin-bottom: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .item-title {
+    flex: 1;
+    min-width: 200px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+    word-wrap: break-word;
+  }
+
+  .badge {
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    font-weight: 500;
+  }
+
+  .badge-phase {
+    background: #f0f0f0;
+    color: #555;
+  }
+
+  .badge-status {
+    background: #e8dff5;
+    color: #6b46c1;
+  }
+
+  .item-meta {
+    margin-top: 8px;
+    font-size: 0.9rem;
+    color: #666;
+  }
+
+  .tags-container {
+    margin-top: 8px;
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    padding: 4px 10px;
+    background: #fff3cd;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    color: #856404;
+  }
+
+  .comments-section {
+    margin-top: 10px;
+    padding-left: 12px;
+    border-left: 3px solid #e8dff5;
+  }
+
+  .comment {
+    font-size: 0.85rem;
+    color: #666;
+    margin-top: 6px;
+    line-height: 1.4;
+  }
+
+  @media (max-width: 768px) {
+    .main-content {
+      margin-left: 80px; /* Account for collapsed sidebar width */
+      padding: 10px;
+    }
+  }
+</style>
+
+<div class="app-container">
   <SrlSidebar
     title="Filters"
     {items}
@@ -261,37 +369,37 @@
     on:quickToolAction={handleQuickToolAction}
   />
 
-  <main style="padding: 20px; flex: 1; overflow-y: auto;">
+  <main class="main-content">
     <h1>🎯 Quick Tools Drag & Drop Demo</h1>
     <p style="color: #666; margin-bottom: 2rem;">
       💡 <strong>Try it:</strong> Use filters in the sidebar or drag items from "Results" section and drop them onto Quick Tools!
     </p>
 
-    <h2 style="margin-top: 2rem;">
+    <h2 style="margin-top: 2rem; word-wrap: break-word;">
       {filteredItems.length > 0 ? `Filtered Items (${filteredItems.length})` : `All Items (${items.length})`}
     </h2>
     {#each (filteredItems.length > 0 ? filteredItems : items) as item}
-      <div style="padding: 12px; border: 1px solid #e0e0e0; border-radius: 8px; margin-bottom: 8px; background: white;">
-        <div style="margin-bottom: 8px;">
-          <strong>{item.title}</strong>
-          <span style="margin-left: 1rem; padding: 4px 8px; background: #f0f0f0; border-radius: 4px; font-size: 0.85rem;">
+      <div class="item-card">
+        <div class="item-header">
+          <div class="item-title">{item.title}</div>
+          <span class="badge badge-phase">
             Phase: {item.phase}
           </span>
-          <span style="margin-left: 0.5rem; padding: 4px 8px; background: #e8dff5; border-radius: 4px; font-size: 0.85rem;">
+          <span class="badge badge-status">
             Status: {item.status}
           </span>
         </div>
         
         {#if item.scheduledDate}
-          <div style="margin-top: 6px; font-size: 0.85rem; color: #666;">
+          <div class="item-meta">
             📅 Scheduled: {item.scheduledDate}
           </div>
         {/if}
         
         {#if item.tags && item.tags.length > 0}
-          <div style="margin-top: 6px; display: flex; gap: 4px; flex-wrap: wrap;">
+          <div class="tags-container">
             {#each item.tags as tag}
-              <span style="padding: 2px 8px; background: #fff3cd; border-radius: 4px; font-size: 0.75rem; color: #856404;">
+              <span class="tag">
                 🏷️ {tag}
               </span>
             {/each}
@@ -299,9 +407,9 @@
         {/if}
         
         {#if item.comments && item.comments.length > 0}
-          <div style="margin-top: 6px; padding-left: 8px; border-left: 3px solid #e8dff5;">
+          <div class="comments-section">
             {#each item.comments as comment}
-              <div style="font-size: 0.8rem; color: #666; margin-top: 4px;">
+              <div class="comment">
                 💬 {comment}
               </div>
             {/each}

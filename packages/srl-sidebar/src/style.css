@@ -15,11 +15,15 @@
     font-family: Arial, Helvetica, sans-serif;
     color: #3b2b4a;
     box-sizing: border-box;
+    flex-shrink: 0;
+    max-height: 100vh;
+    overflow-y: auto;
 }
 
 /* Collapsed */
 .month-sidebar.collapsed {
-    width: 64px;
+    width: 80px;
+    min-width: 80px;
     padding: 1rem 0.5rem;
     overflow: hidden;
 }
