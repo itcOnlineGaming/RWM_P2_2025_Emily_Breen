@@ -1,28 +1,36 @@
 import "./style.css";
-interface $$__sveltets_2_IsomorphicComponent<Props extends Record<string, any> = any, Events extends Record<string, any> = any, Slots extends Record<string, any> = any, Exports = {}, Bindings = string> {
-    new (options: import('svelte').ComponentConstructorOptions<Props>): import('svelte').SvelteComponent<Props, Events, Slots> & {
-        $$bindings?: Bindings;
-    } & Exports;
-    (internal: unknown, props: {
-        $$events?: Events;
-        $$slots?: Slots;
-    }): Exports & {
-        $set?: any;
-        $on?: any;
-    };
-    z_$$bindings?: Bindings;
-}
-declare const SrlSidebar: $$__sveltets_2_IsomorphicComponent<any, {
-    toggle: CustomEvent<any>;
-    login: CustomEvent<any>;
-    logout: CustomEvent<any>;
-    quickToolAction: CustomEvent<any>;
-    change: CustomEvent<any>;
-} & {
-    [evt: string]: CustomEvent<any>;
-}, {
-    default: {};
-}, {}, "">;
-type SrlSidebar = InstanceType<typeof SrlSidebar>;
+import type { FilterGroup, SortOption, QuickTool } from "./types";
+type $$ComponentProps = {
+    title?: string;
+    items?: any[];
+    filterGroups?: FilterGroup[];
+    sortOptions?: SortOption[];
+    quickTools?: QuickTool[];
+    initialSortId?: string | null;
+    selectedFilters?: Record<string, string[]>;
+    selectedSortId?: string | null;
+    filteredItems?: any[];
+    showAuthSection?: boolean;
+    isAuthenticated?: boolean;
+    filterFn?: (item: any, active: Record<string, string[]>) => boolean;
+    sortFn?: (a: any, b: any, sortId: string | null) => number;
+    children?: import('svelte').Snippet;
+    ontoggle?: (detail: {
+        collapsed: boolean;
+    }) => void;
+    onchange?: (detail: {
+        filteredItems: any[];
+        selectedFilters: Record<string, string[]>;
+        selectedSortId: string | null;
+    }) => void;
+    onlogin?: () => void;
+    onlogout?: () => void;
+    onquickToolAction?: (detail: {
+        toolId: string;
+        item: any;
+    }) => void;
+};
+declare const SrlSidebar: import("svelte").Component<$$ComponentProps, {}, "selectedFilters" | "selectedSortId" | "filteredItems">;
+type SrlSidebar = ReturnType<typeof SrlSidebar>;
 export default SrlSidebar;
 //# sourceMappingURL=SrlSidebar.svelte.d.ts.map

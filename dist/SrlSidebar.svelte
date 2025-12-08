@@ -1,49 +1,70 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
   import "./style.css";
   import type { FilterGroup, SortOption, QuickTool } from "./types";
 
   /* Props ------------------------------ */
-  export let title = "Filters";
-  export let items: any[] = [];
-  export let filterGroups: FilterGroup[] = [];
-  export let sortOptions: SortOption[] = [];
-  export let quickTools: QuickTool[] = [];
-  export let initialSortId: string | null = null;
-
-  export let selectedFilters: Record<string, string[]> = {};
-  export let selectedSortId: string | null = initialSortId;
-  export let filteredItems: any[] = [];
-
-  export let showAuthSection = false;
-  export let isAuthenticated = false;
-
-  /* Helper Fns -------------------------- */
-  export let filterFn = (item: any, active: Record<string, string[]>) => {
-    for (const [groupId, values] of Object.entries(active)) {
-      if (!values.length) continue;
-      const v = (item[groupId] ?? "").toString();
-      if (!values.includes(v)) return false;
-    }
-    return true;
-  };
-
-  export let sortFn = (a: any, b: any, sortId: string | null) => {
-    if (!sortId) return 0;
-    const av = a[sortId];
-    const bv = b[sortId];
-    if (av == null || bv == null) return 0;
-    return av < bv ? -1 : av > bv ? 1 : 0;
-  };
+  let { 
+    title = "Filters",
+    items = [],
+    filterGroups = [],
+    sortOptions = [],
+    quickTools = [],
+    initialSortId = null,
+    selectedFilters = $bindable({}),
+    selectedSortId = $bindable(initialSortId),
+    filteredItems = $bindable([]),
+    showAuthSection = false,
+    isAuthenticated = false,
+    filterFn = (item: any, active: Record<string, string[]>) => {
+      for (const [groupId, values] of Object.entries(active)) {
+        if (!values.length) continue;
+        const v = (item[groupId] ?? "").toString();
+        if (!values.includes(v)) return false;
+      }
+      return true;
+    },
+    sortFn = (a: any, b: any, sortId: string | null) => {
+      if (!sortId) return 0;
+      const av = a[sortId];
+      const bv = b[sortId];
+      if (av == null || bv == null) return 0;
+      return av < bv ? -1 : av > bv ? 1 : 0;
+    },
+    children,
+    ontoggle = undefined,
+    onchange = undefined,
+    onlogin = undefined,
+    onlogout = undefined,
+    onquickToolAction = undefined
+  }: {
+    title?: string;
+    items?: any[];
+    filterGroups?: FilterGroup[];
+    sortOptions?: SortOption[];
+    quickTools?: QuickTool[];
+    initialSortId?: string | null;
+    selectedFilters?: Record<string, string[]>;
+    selectedSortId?: string | null;
+    filteredItems?: any[];
+    showAuthSection?: boolean;
+    isAuthenticated?: boolean;
+    filterFn?: (item: any, active: Record<string, string[]>) => boolean;
+    sortFn?: (a: any, b: any, sortId: string | null) => number;
+    children?: import('svelte').Snippet;
+    ontoggle?: (detail: { collapsed: boolean }) => void;
+    onchange?: (detail: { filteredItems: any[], selectedFilters: Record<string, string[]>, selectedSortId: string | null }) => void;
+    onlogin?: () => void;
+    onlogout?: () => void;
+    onquickToolAction?: (detail: { toolId: string, item: any }) => void;
+  } = $props();
 
   /* Sidebar collapse -------------------- */
   let collapsed = $state(false);
   let quickToolsExpanded = $state(false);
-  const dispatch = createEventDispatcher();
 
   function toggleCollapse() {
     collapsed = !collapsed;
-    dispatch("toggle", { collapsed });
+    ontoggle?.({ collapsed });
   }
 
   function toggleQuickTools() {
@@ -75,20 +96,20 @@
   }
 
   function login() {
-    dispatch("login");
+    onlogin?.();
   }
 
   function logout() {
-    dispatch("logout");
+    onlogout?.();
   }
 
   /* Quick Tools drag & drop ------------ */
-  let draggedItem: any = null;
-  let dragOverToolId: string | null = null;
+  let draggedItem: any = $state(null);
+  let dragOverToolId: string | null = $state(null);
 
   function handleToolDrop(toolId: string) {
     if (draggedItem) {
-      dispatch("quickToolAction", { toolId, item: draggedItem });
+      onquickToolAction?.({ toolId, item: draggedItem });
       draggedItem = null;
       dragOverToolId = null;
     }
@@ -125,20 +146,20 @@
   }
 
   /* Sync filters ------------------------- */
-  $: {
+  $effect(() => {
     for (const group of filterGroups) {
       if (!selectedFilters[group.id]) {
         selectedFilters = { ...selectedFilters, [group.id]: [] };
       }
     }
-  }
+  });
 
-  $: {
+  $effect(() => {
     const base = items.filter(item => filterFn(item, selectedFilters));
     const sorted = [...base].sort((a, b) => sortFn(a, b, selectedSortId));
     filteredItems = sorted;
-    dispatch("change", { filteredItems, selectedFilters, selectedSortId });
-  }
+    onchange?.({ filteredItems, selectedFilters, selectedSortId });
+  });
 </script>
 
 <!-- =======================================================================
@@ -154,7 +175,7 @@
   <div class="sidebar-header">
     <button 
       class="collapse-button" 
-      on:click={toggleCollapse}
+      onclick={toggleCollapse}
       aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
     >
       {#if collapsed} ☰ {:else} « {/if}
@@ -162,7 +183,7 @@
 
     {#if !collapsed}
       <h2>{title}</h2>
-      <button class="clear-button" on:click={clearAll} aria-label="Clear all filters">
+      <button class="clear-button" onclick={clearAll} aria-label="Clear all filters">
         Clear
       </button>
     {/if}
@@ -175,7 +196,7 @@
       {#if collapsed}
         <button 
           class="auth-icon-button" 
-          on:click={isAuthenticated ? logout : login}
+          onclick={isAuthenticated ? logout : login}
           aria-label={isAuthenticated ? "Log out" : "Log in"}
         >
           {isAuthenticated ? "🔒" : "🔓"}
@@ -184,7 +205,7 @@
         <p class="auth-status">
           {isAuthenticated ? "✓ Signed in" : "👤 Guest session"}
         </p>
-        <button class="auth-button" on:click={isAuthenticated ? logout : login}>
+        <button class="auth-button" onclick={isAuthenticated ? logout : login}>
           {isAuthenticated ? "Log out" : "Log in to save filters"}
         </button>
       {/if}
@@ -221,7 +242,7 @@
                 <input
                   type={group.type ?? "checkbox"}
                   checked={selectedFilters[group.id]?.includes(option.value)}
-                  on:change={() => toggleFilter(group.id, option.value, group.type ?? "checkbox")}
+                  onchange={() => toggleFilter(group.id, option.value, group.type ?? "checkbox")}
                   aria-label="{group.label}: {option.label}"
                 />
                 <span>{option.label}</span>
@@ -263,7 +284,7 @@
               type="radio"
               name="sort"
               checked={selectedSortId === option.id}
-              on:change={() => handleSortChange(option.id)}
+              onchange={() => handleSortChange(option.id)}
               aria-label="Sort by {option.label}"
             />
             <span>{option.label}</span>
@@ -293,7 +314,7 @@
           </h3>
           <button 
             class="expand-button"
-            on:click={toggleQuickTools}
+            onclick={toggleQuickTools}
             aria-label={quickToolsExpanded ? "Collapse quick tools" : "Expand quick tools"}
             aria-expanded={quickToolsExpanded}
           >
@@ -309,10 +330,10 @@
             <div
               class="tool-dropzone"
               class:drag-over={dragOverToolId === tool.id}
-              on:drop|preventDefault={() => handleToolDrop(tool.id)}
-              on:dragover={(e) => handleDragOver(e, tool.id)}
-              on:dragleave={handleDragLeave}
-              on:keydown={(e) => handleToolKeydown(e, tool.id)}
+              ondrop={(e) => { e.preventDefault(); handleToolDrop(tool.id); }}
+              ondragover={(e) => handleDragOver(e, tool.id)}
+              ondragleave={handleDragLeave}
+              onkeydown={(e) => handleToolKeydown(e, tool.id)}
               role="button"
               tabindex="0"
               aria-label="{tool.label} - Press Enter to apply to selected item"
@@ -343,9 +364,9 @@
           <div
             class="draggable-item"
             draggable="true"
-            on:dragstart={() => draggedItem = item}
-            on:dragend={() => draggedItem = null}
-            on:keydown={(e) => handleItemKeydown(e, item)}
+            ondragstart={() => draggedItem = item}
+            ondragend={() => draggedItem = null}
+            onkeydown={(e) => handleItemKeydown(e, item)}
             role="button"
             tabindex="0"
             aria-label="Press Enter to select {item.title || item.name || 'item'}, then navigate to a quick tool and press Enter to apply"
@@ -364,6 +385,8 @@
     </div>
   {/if}
 
-  <slot />
+  {#if children}
+    {@render children()}
+  {/if}
 
 </aside>
