@@ -37,8 +37,8 @@
   };
 
   /* Sidebar collapse -------------------- */
-  let collapsed = false;
-  let quickToolsExpanded = false;
+  let collapsed = $state(false);
+  let quickToolsExpanded = $state(false);
   const dispatch = createEventDispatcher();
 
   function toggleCollapse() {
