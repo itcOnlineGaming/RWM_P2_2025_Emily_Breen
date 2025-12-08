@@ -34,8 +34,8 @@ jobs:
         run: pnpm test
         continue-on-error: true
       
-      - name: Build
-        run: pnpm build
+      - name: Build package
+        run: cd packages/srl-sidebar && pnpm run build
 
   lint:
     runs-on: ubuntu-latest
