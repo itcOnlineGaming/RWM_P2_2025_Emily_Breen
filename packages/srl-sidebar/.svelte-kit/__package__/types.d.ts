@@ -1,0 +1,23 @@
+export type FilterGroup = {
+    id: string;
+    label: string;
+    icon?: string;
+    type?: "checkbox" | "radio";
+    options: {
+        value: string;
+        label: string;
+    }[];
+};
+export type SortOption = {
+    id: string;
+    label: string;
+    icon?: string;
+};
+export type QuickTool = {
+    id: string;
+    label: string;
+    icon: string;
+    category?: "status" | "organization" | "action" | "time" | "collaboration";
+    color?: string;
+};
+//# sourceMappingURL=types.d.ts.map
