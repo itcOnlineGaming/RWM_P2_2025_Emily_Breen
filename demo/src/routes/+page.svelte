@@ -90,8 +90,8 @@
   /* ------------------------------------------------------------
      HANDLE QUICK TOOL ACTIONS
   ------------------------------------------------------------ */
-  function handleQuickToolAction(event: CustomEvent<{ toolId: string; item: Item }>) {
-    const { toolId, item } = event.detail;
+  function handleQuickToolAction(detail: { toolId: string; item: Item }) {
+    const { toolId, item } = detail;
     
     console.log(`🎯 Quick Tool: ${toolId} on item:`, item);
     
@@ -367,7 +367,7 @@
     {sortOptions}
     {quickTools}
     bind:filteredItems
-    on:quickToolAction={handleQuickToolAction}
+    onquickToolAction={handleQuickToolAction}
   />
 
   <main class="main-content">
